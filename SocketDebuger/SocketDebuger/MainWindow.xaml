@@ -34,6 +34,11 @@
                     <Button x:Name="Button_ConfigDelete" Content="Delete" Grid.Column="1" Click="Button_ConfigDelete_Click"></Button>
                 </Grid>
                 <TreeView x:Name="TreeView_Config" Grid.Row="1" SelectedItemChanged="TreeView_Config_SelectedItemChanged">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsExpanded" Value="True"></Setter>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate DataType="{x:Type local:ConfigTreeItem}" ItemsSource="{Binding Path=Children}">
                             <StackPanel Orientation="Horizontal">

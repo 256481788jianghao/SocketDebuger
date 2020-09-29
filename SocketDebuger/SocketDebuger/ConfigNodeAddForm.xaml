@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SocketDebuger"
         mc:Ignorable="d"
-        Title="ConfigForm" Height="160" Width="300" ResizeMode="NoResize">
+        Title="ConfigForm" Height="160" Width="300" ResizeMode="NoResize" Padding="2,2,2,2">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80"/>

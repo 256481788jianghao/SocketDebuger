@@ -19,10 +19,11 @@ namespace SocketDebuger
     /// </summary>
     public partial class MainWindow : Window
     {
-        ConfigTreeItem node_TcpServer = new ConfigTreeItem("TcpServer");
-        ConfigTreeItem node_TcpClient = new ConfigTreeItem("TcpClient");
-        ConfigTreeItem node_UdpServer = new ConfigTreeItem("UdpServer");
-        ConfigTreeItem node_UdpClient = new ConfigTreeItem("UdpClient");
+        ConfigTreeItem node_TcpServer = new ConfigTreeItem("TcpServer", true);
+        ConfigTreeItem node_TcpClient = new ConfigTreeItem("TcpClient", true);
+        ConfigTreeItem node_UdpServer = new ConfigTreeItem("UdpServer", true);
+        ConfigTreeItem node_UdpClient = new ConfigTreeItem("UdpClient", true);
+        ConfigTreeItem node_cur_select = null;
         public MainWindow()
         {
             InitializeComponent();
@@ -33,6 +34,7 @@ namespace SocketDebuger
 
         private void UpdateConfigNodes()
         {
+            node_cur_select = null;
             TreeView_Config.Items.Clear();
             TreeView_Config.Items.Add(node_TcpServer);
             TreeView_Config.Items.Add(node_TcpClient);
@@ -49,12 +51,38 @@ namespace SocketDebuger
 
         private void Button_ConfigDelete_Click(object sender, RoutedEventArgs e)
         {
-
+            if(node_cur_select != null && !node_cur_select.IsRootNode)
+            {
+                switch (node_cur_select.NType)
+                {
+                    case ConfigTreeItem.NodeType.TcpServer:
+                        {
+                            node_TcpServer.Children.RemoveAll(it => it == node_cur_select);
+                            break;
+                        }
+                    case ConfigTreeItem.NodeType.TcpClient:
+                        {
+                            node_TcpClient.Children.RemoveAll(it => it == node_cur_select);
+                            break;
+                        }
+                    case ConfigTreeItem.NodeType.UdpServer:
+                        {
+                            node_UdpServer.Children.RemoveAll(it => it == node_cur_select);
+                            break;
+                        }
+                    case ConfigTreeItem.NodeType.UdpClient:
+                        {
+                            node_UdpClient.Children.RemoveAll(it => it == node_cur_select);
+                            break;
+                        }
+                }
+                UpdateConfigNodes();
+            }
         }
 
         private void TreeView_Config_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            
+            node_cur_select = TreeView_Config.SelectedItem as ConfigTreeItem;
         }
 
 
