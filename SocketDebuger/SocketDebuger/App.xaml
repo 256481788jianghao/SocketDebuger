@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:SocketDebuger"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="1,1,1,1"></Setter>
+        </Style>
+        
     </Application.Resources>
 </Application>
