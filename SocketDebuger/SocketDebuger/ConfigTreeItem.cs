@@ -7,6 +7,7 @@ namespace SocketDebuger
 {
     public class ConfigTreeItem
     {
+        public Guid Id { get; set; }
         public string Tag { get; set; }
         public NodeType NType { get; set; }
         public List<ConfigTreeItem> Children { get; set; }
@@ -27,6 +28,7 @@ namespace SocketDebuger
         {
             IsRootNode = false;
             Children = new List<ConfigTreeItem>();
+            Id = new Guid();
         }
 
         public enum NodeType

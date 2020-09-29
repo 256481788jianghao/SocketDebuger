@@ -24,6 +24,8 @@ namespace SocketDebuger
         ConfigTreeItem node_UdpServer = new ConfigTreeItem("UdpServer", true);
         ConfigTreeItem node_UdpClient = new ConfigTreeItem("UdpClient", true);
         ConfigTreeItem node_cur_select = null;
+
+        List<TcpClient> m_TcpClientList = new List<TcpClient>();
         public MainWindow()
         {
             InitializeComponent();
@@ -62,6 +64,12 @@ namespace SocketDebuger
                         }
                     case ConfigTreeItem.NodeType.TcpClient:
                         {
+                            TcpClient client = m_TcpClientList.Find(it => it.Id == node_cur_select.Id);
+                            if(client != null)
+                            {
+                                client.Close();
+                            }
+                            m_TcpClientList.RemoveAll(it => it.Id == node_cur_select.Id);
                             node_TcpClient.Children.RemoveAll(it => it == node_cur_select);
                             break;
                         }
@@ -83,8 +91,35 @@ namespace SocketDebuger
         private void TreeView_Config_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             node_cur_select = TreeView_Config.SelectedItem as ConfigTreeItem;
+            if (node_cur_select != null && !node_cur_select.IsRootNode)
+            {
+                switch (node_cur_select.NType)
+                {
+                    case ConfigTreeItem.NodeType.TcpClient:
+                        {
+                            Label_TYPE.Content = node_cur_select.NType.ToString();
+                            TcpClient client = m_TcpClientList.Find(it => it.Id == node_cur_select.Id);
+                            if (client != null)
+                            {
+                                Label_IP.Content = client.GetIPEndPoint().Address.ToString();
+                                Label_PORT.Content = client.GetIPEndPoint().Port.ToString();
+                                if (client.IsConnect())
+                                {
+                                    Button_Connect.IsEnabled = false;
+                                    Button_Close.IsEnabled = true;
+                                }
+                                else
+                                {
+                                    Button_Connect.IsEnabled = true;
+                                    Button_Close.IsEnabled = false;
+                                }
+                            }
+                            break;
+                        }
+                }
+            }
+            
         }
-
 
         private void AddConfigNodeHandle(ConfigTreeItem.NodeType type, string ip, int port)
         {
@@ -103,6 +138,9 @@ namespace SocketDebuger
                         newItem.Tag = ip + "[" + port.ToString() + "]";
                         newItem.NType = type;
                         node_TcpClient.Children.Add(newItem);
+                        TcpClient client = new TcpClient(newItem.Id, ip, port);
+                        client.TcpClientConnectEvent += new TcpClient.TcpClientConnectHandle(TcpClientConnectCallBack);
+                        m_TcpClientList.Add(client);
                         break;
                     }
                 case ConfigTreeItem.NodeType.UdpServer:
@@ -121,6 +159,83 @@ namespace SocketDebuger
                     }
             }
             UpdateConfigNodes();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            foreach(TcpClient client in m_TcpClientList)
+            {
+                client.Close();
+            }
+        }
+
+        private void TcpClientConnectCallBack(object client)
+        {
+            TcpClient item = client as TcpClient;
+            if (item.IsConnect())
+            {
+                
+            }
+        }
+
+        private void Button_Connect_Click(object sender, RoutedEventArgs e)
+        {
+            if (node_cur_select != null && !node_cur_select.IsRootNode)
+            {
+                switch (node_cur_select.NType)
+                {
+                    case ConfigTreeItem.NodeType.TcpClient:
+                        {
+                            TcpClient client = m_TcpClientList.Find(it => it.Id == node_cur_select.Id);
+                            if(client != null)
+                            {
+                                if (!client.IsConnect())
+                                {
+                                    try
+                                    {
+                                        client.Connect();
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        MessageBox.Show(ex.ToString());
+                                    } 
+                                }
+                            }
+                            break;
+                        }
+                }
+            }
+        }
+
+        private void Button_Close_Click(object sender, RoutedEventArgs e)
+        {
+            if (node_cur_select != null && !node_cur_select.IsRootNode)
+            {
+                switch (node_cur_select.NType)
+                {
+                    case ConfigTreeItem.NodeType.TcpClient:
+                        {
+                            TcpClient client = m_TcpClientList.Find(it => it.Id == node_cur_select.Id);
+                            if (client != null)
+                            {
+                                if (client.IsConnect())
+                                {
+                                    try
+                                    {
+                                        client.DisConnect();
+                                        Button_Connect.IsEnabled = true;
+                                        Button_Close.IsEnabled = false;
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        MessageBox.Show(ex.ToString());
+                                    } 
+                                }
+                            }
+                            break;
+                        }
+                }
+            }
         }
     }
 }
