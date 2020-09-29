@@ -30,10 +30,18 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="Create"></Button>
-                    <Button Content="Delete" Grid.Column="1"></Button>
+                    <Button x:Name="Button_ConfigCreate" Content="Create" Click="Button_ConfigCreate_Click"></Button>
+                    <Button x:Name="Button_ConfigDelete" Content="Delete" Grid.Column="1" Click="Button_ConfigDelete_Click"></Button>
                 </Grid>
-                <TreeView Grid.Row="1"></TreeView>
+                <TreeView x:Name="TreeView_Config" Grid.Row="1" SelectedItemChanged="TreeView_Config_SelectedItemChanged">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type local:ConfigTreeItem}" ItemsSource="{Binding Path=Children}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Tag}"></TextBlock>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
             </Grid>
         </GroupBox>
         <Grid Grid.Column="1" Grid.RowSpan="2" Grid.Row="1">
@@ -43,8 +51,42 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <GroupBox Header="Info"></GroupBox>
-            <GroupBox Header="Receive" Grid.Row="1"></GroupBox>
-            <GroupBox Header="Send" Grid.Row="2"></GroupBox>
+            <GroupBox Header="Receive" Grid.Row="1">
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <TextBox VerticalAlignment="Stretch" TextWrapping="Wrap"></TextBox>
+                </Border>
+            </GroupBox>
+            <GroupBox Header="Send" Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="300"/>
+                    </Grid.ColumnDefinitions>
+                    <Border BorderThickness="1" BorderBrush="Black">
+                        <TextBox VerticalAlignment="Stretch" TextWrapping="Wrap"></TextBox>
+                    </Border>
+                    <Grid Grid.Column="1" Margin="8,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <CheckBox Content="Send As Hex" Grid.ColumnSpan="2"/>
+                        <Label Content="Times:" Grid.Row="1"></Label>
+                        <TextBox Grid.Column="1" Text="1" Grid.Row="1"></TextBox>
+                        <Label Content="Interval:" Grid.Row="2"></Label>
+                        <TextBox Grid.Column="1" Grid.Row="2" Text="20"></TextBox>
+                        <Label Content="*50ms" Grid.Row="2" Grid.Column="2"></Label>
+                        <Button Content="StartSend" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+            </GroupBox>
         </Grid>
     </Grid>
 </Window>
