@@ -76,8 +76,8 @@
                     <Label x:Name="Label_IP" Grid.Column="3"></Label>
                     <Label Content="PORT:" Grid.Column="4"></Label>
                     <Label x:Name="Label_PORT" Grid.Column="5"></Label>
-                    <Button x:Name="Button_Connect" Content="Connect" Grid.Row="2" Click="Button_Connect_Click"></Button>
-                    <Button x:Name="Button_Close" Content="Close" Grid.Row="2" Grid.Column="1" Click="Button_Close_Click"></Button>
+                    <Button x:Name="Button_Connect" Content="Connect" Grid.Row="2" Click="Button_Connect_Click" IsEnabled="{Binding Button_Connect_Enable}"></Button>
+                    <Button x:Name="Button_Close" Content="Close" Grid.Row="2" Grid.Column="1" Click="Button_Close_Click" IsEnabled="{Binding Button_Close_Enable}"></Button>
                 </Grid>
             </GroupBox>
             <GroupBox Header="Receive" Grid.Row="1">

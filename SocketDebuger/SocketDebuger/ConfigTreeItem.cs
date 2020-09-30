@@ -28,7 +28,7 @@ namespace SocketDebuger
         {
             IsRootNode = false;
             Children = new List<ConfigTreeItem>();
-            Id = new Guid();
+            Id = Guid.NewGuid();
         }
 
         public enum NodeType

@@ -42,7 +42,7 @@ namespace SocketDebuger
                         nType = ConfigTreeItem.NodeType.TcpServer;break;
                 }
                 AddConfigNodeEvent?.Invoke(nType, ipstr, port);
-                MessageBox.Show("node add sucess");
+                //MessageBox.Show("node add sucess");
             }catch(Exception ex)
             {
                 MessageBox.Show(ex.ToString());

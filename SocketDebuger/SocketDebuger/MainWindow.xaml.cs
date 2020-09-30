@@ -31,7 +31,7 @@ namespace SocketDebuger
             InitializeComponent();
             UpdateConfigNodes();
 
-
+            this.DataContext = GVL.Context;
         }
 
         private void UpdateConfigNodes()
@@ -65,9 +65,9 @@ namespace SocketDebuger
                     case ConfigTreeItem.NodeType.TcpClient:
                         {
                             TcpClient client = m_TcpClientList.Find(it => it.Id == node_cur_select.Id);
-                            if(client != null)
+                            if(client != null && client.IsConnect())
                             {
-                                client.Close();
+                                client.DisConnect();
                             }
                             m_TcpClientList.RemoveAll(it => it.Id == node_cur_select.Id);
                             node_TcpClient.Children.RemoveAll(it => it == node_cur_select);
@@ -105,13 +105,13 @@ namespace SocketDebuger
                                 Label_PORT.Content = client.GetIPEndPoint().Port.ToString();
                                 if (client.IsConnect())
                                 {
-                                    Button_Connect.IsEnabled = false;
-                                    Button_Close.IsEnabled = true;
+                                    GVL.Context.Button_Connect_Enable = false;
+                                    GVL.Context.Button_Close_Enable = true;
                                 }
                                 else
                                 {
-                                    Button_Connect.IsEnabled = true;
-                                    Button_Close.IsEnabled = false;
+                                    GVL.Context.Button_Connect_Enable = true;
+                                    GVL.Context.Button_Close_Enable = false;
                                 }
                             }
                             break;
@@ -139,7 +139,6 @@ namespace SocketDebuger
                         newItem.NType = type;
                         node_TcpClient.Children.Add(newItem);
                         TcpClient client = new TcpClient(newItem.Id, ip, port);
-                        client.TcpClientConnectEvent += new TcpClient.TcpClientConnectHandle(TcpClientConnectCallBack);
                         m_TcpClientList.Add(client);
                         break;
                     }
@@ -165,17 +164,16 @@ namespace SocketDebuger
         {
             foreach(TcpClient client in m_TcpClientList)
             {
-                client.Close();
+                if (client.IsConnect())
+                {
+                    client.DisConnect();
+                }
             }
         }
 
         private void TcpClientConnectCallBack(object client)
         {
-            TcpClient item = client as TcpClient;
-            if (item.IsConnect())
-            {
-                
-            }
+            
         }
 
         private void Button_Connect_Click(object sender, RoutedEventArgs e)
@@ -223,8 +221,6 @@ namespace SocketDebuger
                                     try
                                     {
                                         client.DisConnect();
-                                        Button_Connect.IsEnabled = true;
-                                        Button_Close.IsEnabled = false;
                                     }
                                     catch(Exception ex)
                                     {
