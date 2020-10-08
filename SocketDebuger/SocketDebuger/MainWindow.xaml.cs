@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace SocketDebuger
 {
@@ -103,6 +107,7 @@ namespace SocketDebuger
                             {
                                 Label_IP.Content = client.GetIPEndPoint().Address.ToString();
                                 Label_PORT.Content = client.GetIPEndPoint().Port.ToString();
+                                GVL.Context.IsTcpClientSendingData = client.IsSending();
                                 if (client.IsConnect())
                                 {
                                     GVL.Context.Button_Connect_Enable = false;
@@ -170,12 +175,6 @@ namespace SocketDebuger
                 }
             }
         }
-
-        private void TcpClientConnectCallBack(object client)
-        {
-            
-        }
-
         private void Button_Connect_Click(object sender, RoutedEventArgs e)
         {
             if (node_cur_select != null && !node_cur_select.IsRootNode)
@@ -230,6 +229,90 @@ namespace SocketDebuger
                             }
                             break;
                         }
+                }
+            }
+        }
+
+        DispatcherTimer m_SendDatTimer = new DispatcherTimer();
+        UInt32 m_SendStopCountNum = 0;
+        private void Button_StartSend_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                GVL.Context.Label_SendData_SendCount = 0;
+                m_SendDatTimer.Tick += new EventHandler(SendTimerCallBack);
+                int interval = Convert.ToInt32(GVL.Context.TextBox_SendData_Interval_Text);
+                m_SendStopCountNum = Convert.ToUInt32(GVL.Context.TextBox_SendData_Timers_Text);
+                m_SendDatTimer.Interval = TimeSpan.FromMilliseconds(interval*50);
+                m_SendDatTimer.Start();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void Button_StopSend_Click(object sender, RoutedEventArgs e)
+        {
+            m_SendDatTimer.Stop();
+        }
+
+        private void SendTimerCallBack(object sender,EventArgs e)
+        {
+            if(GVL.Context.Label_SendData_SendCount < m_SendStopCountNum)
+            {
+                if (node_cur_select != null && !node_cur_select.IsRootNode)
+                {
+                    switch (node_cur_select.NType)
+                    {
+                        case ConfigTreeItem.NodeType.TcpClient:
+                            {
+                                TcpClient client = m_TcpClientList.Find(it => it.Id == node_cur_select.Id);
+                                if (client != null)
+                                {
+                                    if (client.IsConnect())
+                                    {
+                                        try
+                                        {
+                                            string SendDataStr = GVL.Context.TextBox_SendData_Text;
+                                            client.SetSendBuffer(SendDataStr, GVL.Context.CheckBox_SendData_IsHex);
+                                            client.SendData();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            MessageBox.Show(ex.ToString());
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                    }
+                }
+                GVL.Context.Label_SendData_SendCount++;
+            }
+        }
+
+        object m_objReceiveFilter = null;
+        object m_objReceiveFilterFunction = null;
+        private void Button_AddFilter_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            if(dialog.ShowDialog() == true)
+            {
+                GVL.Context.Label_Receive_Filter = dialog.FileName;
+                string codestr = File.ReadAllText(GVL.Context.Label_Receive_Filter);
+                SKCSharpCompilter compliter = new SKCSharpCompilter();
+                compliter.SetCodeStr(codestr);
+                try
+                {
+                    Assembly assemblycode = compliter.Compile();
+                    m_objReceiveFilter = assemblycode.CreateInstance("ReceiveFilter");
+                    m_objReceiveFilterFunction = m_objReceiveFilter.GetType().GetMethod("Filter");
+                    //string ans = (string)objMI.Invoke(objReceiveFilter, new object[] { new byte[] { 2,2},2});
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
                 }
             }
         }

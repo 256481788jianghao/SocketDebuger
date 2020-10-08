@@ -76,14 +76,31 @@
                     <Label x:Name="Label_IP" Grid.Column="3"></Label>
                     <Label Content="PORT:" Grid.Column="4"></Label>
                     <Label x:Name="Label_PORT" Grid.Column="5"></Label>
+                    <Label Content="IsSending:" Grid.Row="1"/>
+                    <Label x:Name="Label_IsSend" Content="{Binding IsTcpClientSendingData}" Grid.Column="1" Grid.Row="1"></Label>
                     <Button x:Name="Button_Connect" Content="Connect" Grid.Row="2" Click="Button_Connect_Click" IsEnabled="{Binding Button_Connect_Enable}"></Button>
                     <Button x:Name="Button_Close" Content="Close" Grid.Row="2" Grid.Column="1" Click="Button_Close_Click" IsEnabled="{Binding Button_Close_Enable}"></Button>
                 </Grid>
             </GroupBox>
             <GroupBox Header="Receive" Grid.Row="1">
-                <Border BorderBrush="Black" BorderThickness="1">
-                    <TextBox VerticalAlignment="Stretch" TextWrapping="Wrap"></TextBox>
-                </Border>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="120"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Content="Use Filter"></CheckBox>
+                    <Label Content="{Binding Label_Receive_Filter}" Grid.Column="1"></Label>
+                    <Button x:Name="Button_AddFilter" Content="Add Filter" Grid.Column="2" Click="Button_AddFilter_Click"></Button>
+                    <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" Grid.ColumnSpan="2">
+                        <TextBox Text="{Binding TextBox_ReceiceData_Text}" VerticalAlignment="Stretch" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
+                    </Border>
+                </Grid>
+                
             </GroupBox>
             <GroupBox Header="Send" Grid.Row="2">
                 <Grid>
@@ -92,13 +109,14 @@
                         <ColumnDefinition Width="300"/>
                     </Grid.ColumnDefinitions>
                     <Border BorderThickness="1" BorderBrush="Black">
-                        <TextBox VerticalAlignment="Stretch" TextWrapping="Wrap"></TextBox>
+                        <TextBox Text="{Binding TextBox_SendData_Text,Mode=TwoWay}" VerticalAlignment="Stretch" TextWrapping="Wrap"></TextBox>
                     </Border>
                     <Grid Grid.Column="1" Margin="8,0,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="80"/>
                             <ColumnDefinition/>
                             <ColumnDefinition Width="80"/>
+                            <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -106,13 +124,16 @@
                             <RowDefinition/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <CheckBox Content="Send As Hex" Grid.ColumnSpan="2"/>
+                        <CheckBox IsChecked="{Binding CheckBox_SendData_IsHex,Mode=TwoWay}" Content="Send As Hex" Grid.ColumnSpan="2"/>
                         <Label Content="Times:" Grid.Row="1"></Label>
-                        <TextBox Grid.Column="1" Text="1" Grid.Row="1"></TextBox>
+                        <TextBox Text="{Binding TextBox_SendData_Timers_Text,Mode=TwoWay}" Grid.Column="1"  Grid.Row="1"></TextBox>
+                        <Label Content="SendCount:" Grid.Row="0" Grid.Column="2"></Label>
+                        <Label Content="{Binding Label_SendData_SendCount}" Grid.Row="0" Grid.Column="3"></Label>
                         <Label Content="Interval:" Grid.Row="2"></Label>
-                        <TextBox Grid.Column="1" Grid.Row="2" Text="20"></TextBox>
+                        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding TextBox_SendData_Interval_Text,Mode=TwoWay}"></TextBox>
                         <Label Content="*50ms" Grid.Row="2" Grid.Column="2"></Label>
-                        <Button Content="StartSend" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Center"/>
+                        <Button x:Name="Button_StartSend" Content="StartSend" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Click="Button_StartSend_Click"/>
+                        <Button x:Name="Button_StopSend" Content="StopSend" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center" Click="Button_StopSend_Click" />
                     </Grid>
                 </Grid>
             </GroupBox>

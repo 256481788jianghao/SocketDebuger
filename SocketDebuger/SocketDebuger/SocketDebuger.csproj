@@ -61,6 +61,7 @@
     </ApplicationDefinition>
     <Compile Include="DataContext.cs" />
     <Compile Include="GVL.cs" />
+    <Compile Include="SKCSharpCompilter.cs" />
     <Compile Include="TcpClient.cs" />
     <Page Include="ConfigNodeAddForm.xaml">
       <SubType>Designer</SubType>
