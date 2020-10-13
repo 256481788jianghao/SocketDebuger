@@ -107,6 +107,8 @@ namespace SocketDebuger
                             {
                                 Label_IP.Content = client.GetIPEndPoint().Address.ToString();
                                 Label_PORT.Content = client.GetIPEndPoint().Port.ToString();
+                                GVL.Context.CheckBox_Use_Receive_Filter_IsChecked = client.IsUseReceiveFilter();
+                                GVL.Context.Label_Receive_Filter = client.ReceiveFilterPath;
                                 GVL.Context.IsTcpClientSendingData = client.IsSending();
                                 if (client.IsConnect())
                                 {
@@ -300,20 +302,20 @@ namespace SocketDebuger
             if(dialog.ShowDialog() == true)
             {
                 GVL.Context.Label_Receive_Filter = dialog.FileName;
-                string codestr = File.ReadAllText(GVL.Context.Label_Receive_Filter);
-                SKCSharpCompilter compliter = new SKCSharpCompilter();
-                compliter.SetCodeStr(codestr);
-                try
-                {
-                    Assembly assemblycode = compliter.Compile();
-                    m_objReceiveFilter = assemblycode.CreateInstance("ReceiveFilter");
-                    m_objReceiveFilterFunction = m_objReceiveFilter.GetType().GetMethod("Filter");
-                    //string ans = (string)objMI.Invoke(objReceiveFilter, new object[] { new byte[] { 2,2},2});
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
+                //string codestr = File.ReadAllText(GVL.Context.Label_Receive_Filter);
+                //SKCSharpCompilter compliter = new SKCSharpCompilter();
+                //compliter.SetCodeStr(codestr);
+                //try
+                //{
+                //    Assembly assemblycode = compliter.Compile();
+                //    m_objReceiveFilter = assemblycode.CreateInstance("ReceiveFilter");
+                //    m_objReceiveFilterFunction = m_objReceiveFilter.GetType().GetMethod("Filter");
+                //    //string ans = (string)objMI.Invoke(objReceiveFilter, new object[] { new byte[] { 2,2},2});
+                //}
+                //catch(Exception ex)
+                //{
+                //    MessageBox.Show(ex.ToString());
+                //}
             }
         }
     }

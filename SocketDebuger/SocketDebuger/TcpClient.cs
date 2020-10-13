@@ -29,6 +29,13 @@ namespace SocketDebuger
         object m_objReceiveFilter = null;
         object m_objReceiveFilterFunction = null;
 
+        public string ReceiveFilterPath { get; set; }
+
+        public bool IsUseReceiveFilter()
+        {
+            return ReceiveFilterPath != null && ReceiveFilterPath.Length > 0;
+        }
+
         public void SetReceiveFilter(object filter,object filterFun)
         {
             m_objReceiveFilter = filter;

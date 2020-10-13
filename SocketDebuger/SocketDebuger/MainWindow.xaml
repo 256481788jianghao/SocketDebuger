@@ -93,7 +93,7 @@
                         <RowDefinition Height="30"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <CheckBox Content="Use Filter"></CheckBox>
+                    <CheckBox Content="Use Filter" IsChecked="{Binding CheckBox_Use_Receive_Filter_IsChecked,Mode=TwoWay}"></CheckBox>
                     <Label Content="{Binding Label_Receive_Filter}" Grid.Column="1"></Label>
                     <Button x:Name="Button_AddFilter" Content="Add Filter" Grid.Column="2" Click="Button_AddFilter_Click"></Button>
                     <Border BorderBrush="Black" BorderThickness="1" Grid.Row="1" Grid.ColumnSpan="2">

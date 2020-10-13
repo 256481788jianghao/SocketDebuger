@@ -25,6 +25,7 @@ namespace SocketDebuger
         public string TextBox_ReceiceData_Text { get; set; }
 
         public string Label_Receive_Filter { get; set; }
+        public bool CheckBox_Use_Receive_Filter_IsChecked { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }
